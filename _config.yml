@@ -1,7 +1,7 @@
 # ---------------- #
 #   Main Configs   #
 # ---------------- #
-baseurl: kxdalao.top
+baseurl:
 url: kxdalao.top
 date_format: "ordinal"
 title: "Blog Of Kaixin"
