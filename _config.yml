@@ -2,7 +2,7 @@
 #   Main Configs   #
 # ---------------- #
 baseurl:
-url: kxdalao.top
+url: 
 date_format: "ordinal"
 title: "Blog Of Kaixin"
 subtitle: "Blog Of KaiXin"
@@ -50,7 +50,7 @@ highlight_theme: github
 # ---------------- #
 author: KaiXin
 organization: 
-organization_url: kxdalao.top
+organization_url: 
 github_username: makaixindalao
 location: ZhongShan, China
 email: makaixindalao@163.com
