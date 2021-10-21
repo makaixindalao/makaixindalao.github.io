@@ -2,12 +2,12 @@
 #   Main Configs   #
 # ---------------- #
 baseurl:
-url: 
+url: kxdalao.top
 date_format: "ordinal"
 title: "Blog Of Kaixin"
 subtitle: "Blog Of KaiXin"
 description: "开心的个人博客"
-keywords: 码志, Zhuang Ma, mzlogin, mazhuang, 闷骚的程序员
+keywords: 
 timezone: Asia/Shanghai
 encoding: "utf-8"
 repository: makaixindalao/makaixindalao.github.io
