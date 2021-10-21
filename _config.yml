@@ -138,7 +138,7 @@ gitment:
 # https://github.com/gitalk/gitalk#install
 gitalk:
     owner: makaixindalao
-    repo: makaixindalao.comment
+    repo: comment
     clientID: 1a32d4e56b3c323689a2
     clientSecret: 5ecfdc0fc39d7245a86732f389caedbe244772c4
 # 在使用其它评论组件时可点击显示 Disqus
