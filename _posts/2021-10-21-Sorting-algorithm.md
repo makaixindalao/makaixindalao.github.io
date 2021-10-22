@@ -44,7 +44,7 @@ void InsertSort(int *num,int numSize)
 {
 	for(i = 2; i < numSize; i++)
 	{
-		if()
+		if()1
 	}
 }
 ```
