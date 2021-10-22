@@ -49,13 +49,41 @@ void InsertSort(int *num,int numSize)
 		{
 			if(a[j] < a[i]) break;
 		}
-        if(j != i - 1)
-        {
-            int temp = a[i];
-            for(k = 0; k > j; k--) a[k + 1] = a[k];
-            a[k+1] = temp;
-        }
+		if(j != i - 1)
+		{
+			int temp = a[i];
+			for(k = 0; k > j; k--) a[k + 1] = a[k];
+			a[k+1] = temp;
+		}
 	}
+}
+```
+
+从空间上来看，他只需要一个辅助空间，当序列本身正序排列时，所需要的比较次数最少，为n-1次；当序列本身逆排序时，记录移动次数达到最大值，为(n+2)(n-1)/2。由此直接插入排序的时间复杂度为O(n^2^)。
+
+#### 折半插入排序
+
+由于插入排序是在一个有序表内进行查找，因此可以用二分法进行查找。
+
+其实现算法如下：
+
+```c
+void BinsertSort(int *num, int numSize)
+{
+	int i, j, temp, m, left, right;
+	for (i = 1; i < numSize; i++)
+	{
+		temp = num[i];
+		left = 0; right = i-1;
+		while (left <= right)
+		{
+			m = (left +right) / 2;
+			if(num[m] > temp) right = m-1;
+			else left = m+1;
+		}
+	}
+	for (j = i-1; j>=right+1; j--)num[j+1] = num[j];
+	num[j+1] = temp;
 }
 ```
 
