@@ -40,6 +40,12 @@ categories:
 其实现算法如下：
 
 ```
-
+void InsertSort(int *num,int numSize)
+{
+	for(i = 2; i < numSize; i++)
+	{
+		if()
+	}
+}
 ```
 
