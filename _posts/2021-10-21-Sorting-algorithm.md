@@ -39,12 +39,22 @@ categories:
 
 其实现算法如下：
 
-```
+```c
 void InsertSort(int *num,int numSize)
 {
-	for(i = 2; i < numSize; i++)
+	int i,j,k;
+	for(i = 1; i < numSize; i++)
 	{
-		if()
+		for(j = i - 1; j>= 0; j++)
+		{
+			if(a[j] < a[i]) break;
+		}
+        if(j != i - 1)
+        {
+            int temp = a[i];
+            for(k = 0; k > j; k--) a[k + 1] = a[k];
+            a[k+1] = temp;
+        }
 	}
 }
 ```
