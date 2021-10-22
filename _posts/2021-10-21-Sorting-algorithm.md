@@ -59,7 +59,7 @@ void InsertSort(int *num,int numSize)
 }
 ```
 
-从空间上来看，他只需要一个辅助空间，当序列本身正序排列时，所需要的比较次数最少，为n-1次；当序列本身逆排序时，记录移动次数达到最大值，为(n+2)(n-1)/2。由此直接插入排序的时间复杂度为O(n^2^)。
+从空间上来看，他只需要一个辅助空间，当序列本身正序排列时，所需要的比较次数最少，为n-1次；当序列本身逆排序时，记录移动次数达到最大值，为(n+2)(n-1)/2。由此直接插入排序的时间复杂度为O(n<sup>2</sup>)。
 
 #### 折半插入排序
 
@@ -86,4 +86,92 @@ void BinsertSort(int *num, int numSize)
 	num[j+1] = temp;
 }
 ```
+
+折半插入排序仅减少了关键字比较所用的时间，而记录此时不变，所以折半插入排序的时间复杂度仍为O(n<sup>2</sup>)。
+
+#### 2路插入排序
+
+2路插入是在折半插入的基础上进行改进。折半插入在原先直接插入的基础上改进，通过折半查找，以较少的比较次数就找到了要插入的位置，但是在插入的过程中仍然没有减少移动次数，所以2路插入在此基础上改进，减少了移动次数，但是仍然并没有避免移动记录（如果要避免的话还是得改变存储结构）那么如何减少的移动次数？常规的一个数组{2, 7， 8，10，15 ，29，30， 40，50，66，70，80}，如果插入9，那么按照常规的折半查找后，需要移动记录9次，这是因为我们只能够在一个方向上插入。因此我们设定一个辅助数组A，大小是原来数组相同的大小，将A[0]设为第一个原数组第一个数，通过设置first和final指向整个有序序列的最小值和最大值，即为序列的尾部和头部，并且将其设置位一个循环数组，这样就可以进行双端插入。此时原数组只需往左边移动3次。之所以能减少移动次数的原因在于可以往2个方向移动记录，故称为2路插入。A[0]的前面是个有序序列，后面也是有序序列，整个也是有序序列。
+
+```c
+int ChangeTwoInsertSort()
+{
+	//ehance the two insert sort
+	int final = 0;
+	int first = 0;
+	const int iLenght = iCount -1;
+ 
+	int iTempBuff[iLenght] = {0};
+	iTempBuff[0] = iRawBuff[1];
+	//先和temp[0]比较从而以其为分界线
+	for (int i = 2; i <= iLenght; i++ )
+	{
+		if (iRawBuff[i] >= iTempBuff[0])
+		{
+			//that means ,输入右半部
+			if (iRawBuff[i] >=iTempBuff[final])
+			{
+				//大于当前最大值
+				final++;
+				iTempBuff[final] = iRawBuff[i];
+			}
+			else
+			{
+				//小于当前最大值，但大于分界线值，左移，但不超过零
+				int j = final++;
+				while ((iTempBuff[j]>=iRawBuff[i])&&(j>=0))
+				{
+					iTempBuff[j+1] = iTempBuff[j];
+					j--;
+ 
+				}
+				iTempBuff[j+1] = iRawBuff[i];
+			}
+ 
+		}
+		if (iRawBuff[i] < iTempBuff[0])
+		{
+			//that means 输入左半部
+			if (iRawBuff[i] >= iTempBuff[first])
+			{
+				//
+				int j = first--;
+ 
+				while (j<=iLenght&&iTempBuff[j]<=iRawBuff[i])
+				{
+					iTempBuff[j-1] = iTempBuff[j];
+					j++;
+				}
+				iTempBuff[j-1] = iRawBuff[i];
+			}
+			if (iRawBuff[i] < iTempBuff[first])
+			{
+				//小于当前最小
+				first = (first-1+iLenght)%iLenght;
+				iTempBuff[first] = iRawBuff[i];
+			}
+		}
+		printf("第%d趟：\n",i);
+		for(int k = 0; k < iLenght; k++)
+		{
+			std::cout<<iTempBuff[k]<<"\t";
+		}
+		std::cout<<"\n";
+	
+	}
+	//数据导入原始数组
+	for(int i = 0; i< iLenght; i++)
+	{
+        iRawBuff[i+1] = iTempBuff[(first++)%iLenght];
+	}
+ 
+	return 0;
+}
+
+
+```
+
+代码原文链接：[https://blog.csdn.net/onedreamer/article/details/6745006](https://blog.csdn.net/onedreamer/article/details/6745006)
+
+二路插入排序中，移动记录次数约为n<sup>2</sup>/8，因此，2路插入排序法只能减少移动记录次数，而不能绝对避免移动记录，时间复杂度仍为O(n<sup>2</sup>)。
 
