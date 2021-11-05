@@ -1,11 +1,11 @@
 ---
 layout: post
-title: 插入排序
-description: 几种常见的插入排序。
+title: FreeRTOS学习教程（一）
+description: FreeRTOS简介
 categories:
-  - C
-  - 排序	
-  - 插入排序
+  - FreeRTOS
+  - M4
+  - 实时操作系统
 ---
 
 排序是计算机程序设计中一种重要的操作，功能是将一个元素数据的任意序列重新排列成一个按关键字的有序序列。
