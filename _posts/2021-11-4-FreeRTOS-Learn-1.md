@@ -1,7 +1,7 @@
 ---
 layout: post
 title: FreeRTOS学习教程（一）
-description: FreeRTOS简介
+description: FreeRTOS简介。
 categories:
   - FreeRTOS
   - M4
