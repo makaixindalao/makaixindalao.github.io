@@ -1,4 +1,5 @@
 ---
+
 layout: post
 title: 基于cortex M4内核空调实时控制系统
 description: 基于cortex M4内核空调实时控制系统
@@ -128,6 +129,7 @@ void task1_task(void *pvParameters)
 }
 ```
 
+
 ```C
 //task2任务函数
 void task2_task(void *pvParameters)
@@ -143,6 +145,7 @@ void task2_task(void *pvParameters)
 }
 
 ```
+
 
 ```c
 //主函数调用
@@ -161,6 +164,7 @@ vTaskStartScheduler();
 }
 
 ```
+
 
 ```c
 //任务创建函数
