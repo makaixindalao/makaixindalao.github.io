@@ -78,3 +78,138 @@ M4内核处理机有非常丰富的资源，例如大量串口（可复用）、
 工程内容截图如图1所示
 
 ![](/images/posts/github/project.png)
+
+**图1 工程文件内容**
+
+ 主要步骤可概括为：
+
+1)复制FreeRTOS必要核心文件
+
+2)修改FreeRTOSConfig.h头文件
+
+3)指定头文件路径
+
+4)修改stm32f4xx_it.c中断服务函数
+
+如图1所示：需要的文件包括croutine.c、event_group.c、list.c、queue.c、tasks.c、timers.c、heap_4.c、port.c以及FreeRTOSConfig.h。
+
+其中，src文件夹主要包含了FreeRTOS中通用的头文件和C文件，是大部分FreeRTOS函数定义的位置，由于采用了大量的宏定义，修改后也适用于各种处理器和编译器，。
+
+Port文件夹中则是存放内存相关、处理器架构的代码，同样也是从官方文件拷贝过来。
+
+FreeRTOSConfig.h则是从Demo文件夹中，相应的处理器例程中拷贝过来，再在Keil中指定头文件路径。这个头文件中我们可以对一些我们需要的功能进行宏定义。
+
+最后配置SysTick 中断服务函数， FreeRTOS由于其开源特性，经过了长时间的发展后，已经很容易与各类芯片内核匹配，我们只需要注释掉库文件中的PendSV_Handler()与SVC_Handler()这两个函数，因为FreeRTOS文件中自适应匹配了M4内核这两个函数的功能。
+
+## 部分代码展示
+
+```c
+//task1任务函数
+void task1_task(void *pvParameters)
+{
+    u8 task1_num=0;
+    while(1)
+    {
+        task1_num++;   //任务执1行次数加1
+        subMainKeyRead();    // 按键检测处理
+        subMainKeyHandle();  // 按键功能处理
+        printf("任务1已经执行：%d次\r\n",task1_num);
+        if(task1_num==5) 
+        {
+            if(Task2Task_Handler != NULL)                     {
+            vTaskDelete(Task2Task_Handler);
+            Task2Task_Handler=NULL;      
+            printf("任务1删除了任务2!\r\n");
+        }
+    }
+	vTaskDelay(1000);             
+}
+```
+
+```C
+//task2任务函数
+void task2_task(void *pvParameters)
+{
+	u8 task2_num=0;
+	while(1)
+	{
+		task2_num++;	
+   		subMainModeRun();				
+		printf("任务2已经执行：%d次\r\n",task2_num);
+        vTaskDelay(1000);                        
+	}
+}
+
+```
+
+```c
+//主函数调用
+void main()
+{
+NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
+		delay_init(168);					
+		uart_init(115200);
+xTaskCreate((TaskFunction_t )start_task,            
+                (const char*)"start_task",          
+                (uint16_t)START_STK_SIZE,        
+                (void*)NULL,                  
+                (UBaseType_t)START_TASK_PRIO,       
+                (TaskHandle_t* )&StartTask_Handler);                
+vTaskStartScheduler();
+}
+
+```
+
+```c
+//任务创建函数
+void start_task(void *pvParameters)
+{
+    taskENTER_CRITICAL();         
+    xTaskCreate((TaskFunction_t )task1_task,             
+                (const char*)"task1_task",           
+               (uint16_t)TASK1_STK_SIZE,        
+                (void*)NULL,                  
+            (UBaseType_t)TASK1_TASK_PRIO,        
+            (TaskHandle_t*)&Task1Task_Handler);   
+    xTaskCreate((TaskFunction_t )task2_task, 
+                (const char*)"task2_task",   
+                (uint16_t )TASK2_STK_SIZE,
+                (void*)NULL,
+            (UBaseType_t)TASK2_TASK_PRIO,
+            (TaskHandle_t*  )&Task2Task_Handler); 
+    vTaskDelete(StartTask_Handler); 
+    taskEXIT_CRITICAL();            
+}
+```
+
+## 总结
+
+本文将空调主控芯片更换为更为强大的M4内核处理器，运行速度是传统空调的8倍，RAM空间提升至8倍大小。并且搭载FreeRTOS实时操作系统，极大避免了CPU资源的浪费；相对于传统空调的“裸机”系统，有以下优点：
+
+\1) 高实时性，由于其任务堵塞机制的存在，CPU资源不会被延时函数或任务卡死等情况浪费，响应速度相对于“裸机”系统有很大的提升
+
+2)高内聚、低耦合：符合软件开发的开发原则，任务定义好后便于移植。
+
+3)高并发性，相对于“裸机”系统的串行处理方式，实时操作系统将任务区分优先级，高优先级的任务能够打断低优先的任务，同一优先级的任务共同使用CPU资源
+
+\4) 高开发效率，由于FreeRTOS市场占有率极高并且开源，很多厂商都对此操作系统进行了优化，将很多软件常用功能进行封装，我们只需要调用相关API，不用做过多的开发。
+
+5)可发展范围广、空间大，很多厂商的软件只能在操作系统上运行，乐鑫、TI提供的一些关于WIFI的SOC SDK。
+
+## 参考文献
+
+[1] 熊一鹏,岳伟.FreeRTOS多任务调度机制在监控单元中的应用[J].单片机与嵌入式系统应用,2021,21(09):64-66.
+
+[2] 靳大为,何磊.FreeRTOS在液压支架电液控系统中的应用[J].现代工业经济和信息化,2021,11(09):126-128.DOI:
+
+10.16525/j.cnki.14-1362/n.2021.09.53.
+
+[3] 闫敏. 基于OneNet物联网平台的家用智能断路器系统[D].河南科技学院,2021.DOI:10.27704/d.cnki.ghnkj.
+
+2021.000093.
+
+[4] 罗成志,王文斌,沈勇,张鑫.基于阿里云的新能源汽车空调状况监测系统设计[J].单片机与嵌入式系统应用,2021,21(01):46-49.
+
+[5] 瑞萨电子扩展其Arm Cortex内核MCU产品家族[J].单片机与嵌入式系统应用,2021,21(02):94.
+
+[6] 薛川. 基于ARM的智能家居系统设计与实现[D].电子科技大学,2020.DOI:10.27005/d.cnki.gdzku.2020.001664.
