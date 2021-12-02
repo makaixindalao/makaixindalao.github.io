@@ -116,10 +116,12 @@ void task1_task(void *pvParameters)
         printf("任务1已经执行：%d次\r\n",task1_num);
         if(task1_num==5) 
         {
-            if(Task2Task_Handler != NULL)                     {
-            vTaskDelete(Task2Task_Handler);
-            Task2Task_Handler=NULL;      
-            printf("任务1删除了任务2!\r\n");
+            if(Task2Task_Handler != NULL)                     
+            {
+                vTaskDelete(Task2Task_Handler);
+                Task2Task_Handler=NULL;      
+                printf("任务1删除了任务2!\r\n");
+            }
         }
     }
 	vTaskDelay(1000);             
