@@ -1,7 +1,7 @@
 ---
 layout: post
 title: FreeRTOS学习教程（二）
-description: FreeRTOS代码移植
+description: FreeRTOS系统移植
 categories:
   - FreeRTOS
   - M4
@@ -9,3 +9,4 @@ categories:
 ---
 
 111
+
